@@ -37,7 +37,7 @@ class MCAT_Surv(nn.Module):
         for input_dim in omic_sizes:
             fc_omic = [SNN_Block(dim1=input_dim, dim2=hidden[0])]
             for i, _ in enumerate(hidden[1:]):
-                fc_omic.append(SNN_Block(dim1=hidden[i], dim2=hidden[i+1], dropout=0.25))
+                fc_omic.append(SNN_Block(dim1=hidden[i], dim2=hidden[i+1], dropout=0.25)) #ith value of hidden and i+1 value of hidden
             sig_networks.append(nn.Sequential(*fc_omic))
         self.sig_networks = nn.ModuleList(sig_networks)
 
