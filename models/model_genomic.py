@@ -36,7 +36,7 @@ class SNN(nn.Module):
         features = self.fc_omic(x)
 
         logits = self.classifier(features).unsqueeze(0)
-        Y_hat = torch.topk(logits, 1, dim=1)[1]
+        Y_hat = torch.topk(logits, 1, dim=1)[1] #index of the largest element
         hazards = torch.sigmoid(logits)
         S = torch.cumprod(1 - hazards, dim=1)
         return hazards, S, Y_hat, None, None
