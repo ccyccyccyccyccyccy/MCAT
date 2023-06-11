@@ -275,6 +275,16 @@ def multi_head_attention_forward(
         if (query is key or torch.equal(query, key)) and (key is value or torch.equal(key, value)):
             # self-attention
             q, k, v = linear(query, in_proj_weight, in_proj_bias).chunk(3, dim=-1)
+            
+            '''
+            linear transformation. The arguments are:
+
+in_features (mandatory): This specifies the size of the input tensor. It is an integer value that represents the number of input features to the layer.
+out_features (mandatory): This specifies the size of the output tensor. It is an integer value that represents the number of output features from the layer.
+bias (optional): This is a boolean value 
+
+.chunk() function is used to split a tensor into a number of chunks along a given dimension. 
+'''
 
         elif key is value or torch.equal(key, value):
             # encoder-decoder attention
@@ -334,7 +344,7 @@ def multi_head_attention_forward(
         len1, len2 = q_proj_weight_non_opt.size()
         assert len1 == embed_dim and len2 == query.size(-1)
 
-        k_proj_weight_non_opt = torch.jit._unwrap_optional(k_proj_weight)
+        k_proj_weight_non_opt = torch.jit._unwrap_optional(k_proj_weight) #If an optional tensor contains a tensor value, the function returns the tensor. Otherwise, it raises a ValueError exception.
         len1, len2 = k_proj_weight_non_opt.size()
         assert len1 == embed_dim and len2 == key.size(-1)
 
