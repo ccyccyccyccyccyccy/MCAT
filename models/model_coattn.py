@@ -459,9 +459,17 @@ bias (optional): This is a boolean value
     attn_output_weights = softmax(attn_output_weights, dim=-1)
     attn_output_weights = dropout(attn_output_weights, p=dropout_p, training=training)
 
-    attn_output = torch.bmm(attn_output_weights, v)
+    attn_output = torch.bmm(attn_output_weights, v) #o perform batch matrix multiplication.
     assert list(attn_output.size()) == [bsz * num_heads, tgt_len, head_dim]
     attn_output = attn_output.transpose(0, 1).contiguous().view(tgt_len, bsz, embed_dim)
+    '''
+    we first create a non-contiguous tensor x of shape (2, 3, 4) and transpose it along the first and third dimensions using the transpose() method. The resulting tensor y is non-contiguous.
+
+We then use the .contiguous() method to create a new tensor z that has the same data as y but is stored in a contiguous block of memory. The resulting tensor z is contiguous.
+
+ .view change the shape of a tensor without changing its data
+'''
+
     attn_output = linear(attn_output, out_proj_weight, out_proj_bias)
     
     if need_weights:
