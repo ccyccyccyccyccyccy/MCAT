@@ -47,6 +47,10 @@ class BilinearFusion(nn.Module):
 
         self.post_fusion_dropout = nn.Dropout(p=dropout_rate)
         self.encoder1 = nn.Sequential(nn.Linear((dim1+1)*(dim2+1), 256), nn.ReLU(), nn.Dropout(p=dropout_rate))
+        '''
+        The encoder1 module performs this transformation by first flattening the 2D grid into a 1D tensor using the expression (dim1+1)*(dim2+1) as the length of the flattened tensor. 
+        This flattened tensor is then passed through a fully connected layer followed by a nonlinear activation function (nn.ReLU) and a dropout layer to produce an output tensor of shape (batch_size, 256).
+        '''
         self.encoder2 = nn.Sequential(nn.Linear(256+skip_dim, mmhid), nn.ReLU(), nn.Dropout(p=dropout_rate))
 
     def forward(self, vec1, vec2):
