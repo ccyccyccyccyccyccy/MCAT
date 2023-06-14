@@ -52,6 +52,8 @@ class BilinearFusion(nn.Module):
         This flattened tensor is then passed through a fully connected layer followed by a nonlinear activation function (nn.ReLU) and a dropout layer to produce an output tensor of shape (batch_size, 256).
         '''
         self.encoder2 = nn.Sequential(nn.Linear(256+skip_dim, mmhid), nn.ReLU(), nn.Dropout(p=dropout_rate))
+        # if skip: 256 + dim1_og+ dim2_og
+        #mmhid is a hyperparameter that represents the size of the hidden layer in the second encoder module (encoder2) of the BilinearFusion module.
 
     def forward(self, vec1, vec2):
         ### Gated Multimodal Units
@@ -74,10 +76,10 @@ class BilinearFusion(nn.Module):
         ### Fusion
         o1 = torch.cat((o1, torch.cuda.FloatTensor(o1.shape[0], 1).fill_(1)), 1)
         o2 = torch.cat((o2, torch.cuda.FloatTensor(o2.shape[0], 1).fill_(1)), 1)
-        o12 = torch.bmm(o1.unsqueeze(2), o2.unsqueeze(1)).flatten(start_dim=1) # BATCH_SIZE X 1024
+        o12 = torch.bmm(o1.unsqueeze(2), o2.unsqueeze(1)).flatten(start_dim=1) # BATCH_SIZE X 1024 #(batch, size1, 1) , (batch, 1, size2)> (batch, size1*size2)
         out = self.post_fusion_dropout(o12)
-        out = self.encoder1(out)
-        if self.skip: out = torch.cat((out, vec1, vec2), 1)
+        out = self.encoder1(out) #256
+        if self.skip: out = torch.cat((out, vec1, vec2), 1) 
         out = self.encoder2(out)
         return out
 
