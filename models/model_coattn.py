@@ -233,7 +233,7 @@ def multi_head_attention_forward(
           L is the target sequence length, S is the source sequence length.
     """
     tens_ops = (query, key, value, in_proj_weight, in_proj_bias, bias_k, bias_v, out_proj_weight, out_proj_bias)
-    if has_torch_function(tens_ops):
+    if has_torch_function(tens_ops): #custom
         return handle_torch_function(
             multi_head_attention_forward,
             tens_ops,
